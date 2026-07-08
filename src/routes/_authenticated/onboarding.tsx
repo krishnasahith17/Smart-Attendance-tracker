@@ -26,7 +26,7 @@ import { COURSE_COLORS, dayName, formatTime, todayStr } from "@/lib/attendance";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/_authenticated/onboarding")({
-  component: Onboarding;
+  component: Onboarding,
 });
 
 function Onboarding() {
