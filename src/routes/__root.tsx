@@ -92,14 +92,18 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "apple-mobile-web-app-capable", content: "yes" },
       { name: "apple-mobile-web-app-status-bar-style", content: "black-translucent" },
       { name: "apple-mobile-web-app-title", content: "Attendance" },
-      { property: "og:title", content: "Smart Attendance Tracker" },
+      { property: "og:title", content: "Smart Attendance Tracker — Never miss the 75% mark" },
       {
         property: "og:description",
         content:
-          "AI-powered attendance tracking for college students with timetable import and threshold alerts.",
+          "Track class attendance per course with AI timetable import, holiday detection, and smart threshold warnings so you always know how many classes you can skip.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "Smart Attendance Tracker — Never miss the 75% mark" },
+      { name: "twitter:description", content: "Track class attendance per course with AI timetable import, holiday detection, and smart threshold warnings so you always know how many classes you can skip." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/4ed5db7f-e4c7-4fa7-b528-3e4d171c1620/id-preview-6c3ef3a5--48f185fc-5c08-479b-98bd-1efbe1801631.lovable.app-1783489674290.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/4ed5db7f-e4c7-4fa7-b528-3e4d171c1620/id-preview-6c3ef3a5--48f185fc-5c08-479b-98bd-1efbe1801631.lovable.app-1783489674290.png" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
@@ -110,7 +114,6 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         href: "https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap",
       },
       { rel: "manifest", href: "/manifest.webmanifest" },
-      { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
       { rel: "apple-touch-icon", href: "/icon-192.png" },
     ],
   }),
