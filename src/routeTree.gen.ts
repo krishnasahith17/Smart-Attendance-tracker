@@ -17,6 +17,7 @@ import { Route as AuthenticatedTodayRouteImport } from './routes/_authenticated/
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedCoursesRouteImport } from './routes/_authenticated/courses'
 import { Route as AuthenticatedCalendarRouteImport } from './routes/_authenticated/calendar'
+import { Route as AuthenticatedCourseCourseIdRouteImport } from './routes/_authenticated/course.$courseId'
 
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
@@ -57,6 +58,12 @@ const AuthenticatedCalendarRoute = AuthenticatedCalendarRouteImport.update({
   path: '/calendar',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedCourseCourseIdRoute =
+  AuthenticatedCourseCourseIdRouteImport.update({
+    id: '/course/$courseId',
+    path: '/course/$courseId',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -66,6 +73,7 @@ export interface FileRoutesByFullPath {
   '/courses': typeof AuthenticatedCoursesRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/today': typeof AuthenticatedTodayRoute
+  '/course/$courseId': typeof AuthenticatedCourseCourseIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -75,6 +83,7 @@ export interface FileRoutesByTo {
   '/courses': typeof AuthenticatedCoursesRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/today': typeof AuthenticatedTodayRoute
+  '/course/$courseId': typeof AuthenticatedCourseCourseIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -86,6 +95,7 @@ export interface FileRoutesById {
   '/_authenticated/courses': typeof AuthenticatedCoursesRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/today': typeof AuthenticatedTodayRoute
+  '/_authenticated/course/$courseId': typeof AuthenticatedCourseCourseIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -97,6 +107,7 @@ export interface FileRouteTypes {
     | '/courses'
     | '/dashboard'
     | '/today'
+    | '/course/$courseId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -106,6 +117,7 @@ export interface FileRouteTypes {
     | '/courses'
     | '/dashboard'
     | '/today'
+    | '/course/$courseId'
   id:
     | '__root__'
     | '/'
@@ -116,6 +128,7 @@ export interface FileRouteTypes {
     | '/_authenticated/courses'
     | '/_authenticated/dashboard'
     | '/_authenticated/today'
+    | '/_authenticated/course/$courseId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -183,6 +196,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedCalendarRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/course/$courseId': {
+      id: '/_authenticated/course/$courseId'
+      path: '/course/$courseId'
+      fullPath: '/course/$courseId'
+      preLoaderRoute: typeof AuthenticatedCourseCourseIdRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
   }
 }
 
@@ -191,6 +211,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedCoursesRoute: typeof AuthenticatedCoursesRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedTodayRoute: typeof AuthenticatedTodayRoute
+  AuthenticatedCourseCourseIdRoute: typeof AuthenticatedCourseCourseIdRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
@@ -198,6 +219,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedCoursesRoute: AuthenticatedCoursesRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedTodayRoute: AuthenticatedTodayRoute,
+  AuthenticatedCourseCourseIdRoute: AuthenticatedCourseCourseIdRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
