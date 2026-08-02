@@ -9,11 +9,17 @@ import {
   Moon,
   LogOut,
   Palmtree,
+  Eraser,
 } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAttendance } from "@/hooks/use-stats";
-import { useAddHolidays, useDeleteHoliday, useUpdateProfile } from "@/hooks/use-data";
+import {
+  useAddHolidays,
+  useDeleteHoliday,
+  useDeleteRecordsBefore,
+  useUpdateProfile,
+} from "@/hooks/use-data";
 import { HolidayImportDialog } from "@/components/holiday-import-dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -21,6 +27,16 @@ import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
 import { Skeleton } from "@/components/ui/skeleton";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { formatDatePretty } from "@/lib/attendance";
 
 export const Route = createFileRoute("/_authenticated/settings")({
@@ -33,6 +49,7 @@ function SettingsPage() {
   const updateProfile = useUpdateProfile();
   const addHolidays = useAddHolidays();
   const deleteHoliday = useDeleteHoliday();
+  const deleteBefore = useDeleteRecordsBefore();
 
   const [semesterStart, setSemesterStart] = useState("");
   const [threshold, setThreshold] = useState(75);
@@ -40,6 +57,29 @@ function SettingsPage() {
   const [newHolidayDate, setNewHolidayDate] = useState("");
   const [newHolidayName, setNewHolidayName] = useState("");
   const [dark, setDark] = useState(false);
+  const [cutoffDate, setCutoffDate] = useState("");
+  const [shiftStart, setShiftStart] = useState(true);
+  const [confirmOpen, setConfirmOpen] = useState(false);
+
+  async function clearBeforeCutoff() {
+    if (!cutoffDate) return;
+    try {
+      const removed = await deleteBefore.mutateAsync(cutoffDate);
+      if (shiftStart) {
+        await updateProfile.mutateAsync({ semester_start: cutoffDate });
+        setSemesterStart(cutoffDate);
+      }
+      setConfirmOpen(false);
+      toast.success(
+        removed === 0
+          ? "No attendance found before that date"
+          : `Cleared ${removed} attendance entr${removed === 1 ? "y" : "ies"}`,
+      );
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Could not clear attendance");
+    }
+  }
+
 
   useEffect(() => {
     if (profile) {
@@ -205,6 +245,43 @@ function SettingsPage() {
             )}
           </section>
 
+          {/* Attendance start cut-off */}
+          <section className="rounded-3xl border bg-card p-5 shadow-card">
+            <h2 className="mb-1 flex items-center gap-1.5 font-bold">
+              <Eraser className="h-4 w-4 text-danger" /> Attendance cut-off
+            </h2>
+            <p className="mb-3 text-xs text-muted-foreground">
+              If your college only counts attendance from a certain date, clear everything marked
+              before it.
+            </p>
+            <div className="space-y-3">
+              <div className="space-y-1">
+                <Label className="text-xs">Count attendance from</Label>
+                <Input
+                  type="date"
+                  className="h-9"
+                  value={cutoffDate}
+                  onChange={(e) => setCutoffDate(e.target.value)}
+                />
+              </div>
+              <div className="flex items-center justify-between gap-3">
+                <Label htmlFor="shift-start" className="text-xs font-medium">
+                  Also move semester start to this date
+                </Label>
+                <Switch id="shift-start" checked={shiftStart} onCheckedChange={setShiftStart} />
+              </div>
+              <Button
+                variant="outline"
+                className="w-full rounded-xl text-danger hover:text-danger"
+                disabled={!cutoffDate || deleteBefore.isPending}
+                onClick={() => setConfirmOpen(true)}
+              >
+                Clear attendance before this date
+              </Button>
+            </div>
+          </section>
+
+
           {/* Appearance */}
           <section className="rounded-3xl border bg-card p-5 shadow-card">
             <div className="flex items-center justify-between">
@@ -230,6 +307,33 @@ function SettingsPage() {
       )}
 
       <HolidayImportDialog open={importOpen} onOpenChange={setImportOpen} />
+
+      <AlertDialog open={confirmOpen} onOpenChange={setConfirmOpen}>
+        <AlertDialogContent className="rounded-3xl">
+          <AlertDialogHeader>
+            <AlertDialogTitle>Clear earlier attendance?</AlertDialogTitle>
+            <AlertDialogDescription>
+              All attendance marked before {cutoffDate ? formatDatePretty(cutoffDate) : "this date"}{" "}
+              will be permanently deleted
+              {shiftStart ? ", and your semester start will move to that date" : ""}. This can't be
+              undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel className="rounded-xl">Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              className="rounded-xl bg-danger text-danger-foreground hover:bg-danger/90"
+              onClick={(e) => {
+                e.preventDefault();
+                void clearBeforeCutoff();
+              }}
+            >
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
     </div>
   );
 }

@@ -300,3 +300,20 @@ export function useMarkAttendance() {
     onSuccess: () => qc.invalidateQueries({ queryKey: ["records"] }),
   });
 }
+
+/** Delete every attendance record before a given date (exclusive). */
+export function useDeleteRecordsBefore() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (date: string) => {
+      const { data, error } = await supabase
+        .from("attendance_records")
+        .delete()
+        .lt("record_date", date)
+        .select("id");
+      if (error) throw error;
+      return data?.length ?? 0;
+    },
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["records"] }),
+  });
+}
