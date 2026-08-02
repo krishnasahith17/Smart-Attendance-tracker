@@ -205,6 +205,43 @@ function SettingsPage() {
             )}
           </section>
 
+          {/* Attendance start cut-off */}
+          <section className="rounded-3xl border bg-card p-5 shadow-card">
+            <h2 className="mb-1 flex items-center gap-1.5 font-bold">
+              <Eraser className="h-4 w-4 text-danger" /> Attendance cut-off
+            </h2>
+            <p className="mb-3 text-xs text-muted-foreground">
+              If your college only counts attendance from a certain date, clear everything marked
+              before it.
+            </p>
+            <div className="space-y-3">
+              <div className="space-y-1">
+                <Label className="text-xs">Count attendance from</Label>
+                <Input
+                  type="date"
+                  className="h-9"
+                  value={cutoffDate}
+                  onChange={(e) => setCutoffDate(e.target.value)}
+                />
+              </div>
+              <div className="flex items-center justify-between gap-3">
+                <Label htmlFor="shift-start" className="text-xs font-medium">
+                  Also move semester start to this date
+                </Label>
+                <Switch id="shift-start" checked={shiftStart} onCheckedChange={setShiftStart} />
+              </div>
+              <Button
+                variant="outline"
+                className="w-full rounded-xl text-danger hover:text-danger"
+                disabled={!cutoffDate || deleteBefore.isPending}
+                onClick={() => setConfirmOpen(true)}
+              >
+                Clear attendance before this date
+              </Button>
+            </div>
+          </section>
+
+
           {/* Appearance */}
           <section className="rounded-3xl border bg-card p-5 shadow-card">
             <div className="flex items-center justify-between">
