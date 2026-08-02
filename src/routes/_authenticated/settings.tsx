@@ -307,6 +307,33 @@ function SettingsPage() {
       )}
 
       <HolidayImportDialog open={importOpen} onOpenChange={setImportOpen} />
+
+      <AlertDialog open={confirmOpen} onOpenChange={setConfirmOpen}>
+        <AlertDialogContent className="rounded-3xl">
+          <AlertDialogHeader>
+            <AlertDialogTitle>Clear earlier attendance?</AlertDialogTitle>
+            <AlertDialogDescription>
+              All attendance marked before {cutoffDate ? formatDatePretty(cutoffDate) : "this date"}{" "}
+              will be permanently deleted
+              {shiftStart ? ", and your semester start will move to that date" : ""}. This can't be
+              undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel className="rounded-xl">Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              className="rounded-xl bg-danger text-danger-foreground hover:bg-danger/90"
+              onClick={(e) => {
+                e.preventDefault();
+                void clearBeforeCutoff();
+              }}
+            >
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
     </div>
   );
 }
