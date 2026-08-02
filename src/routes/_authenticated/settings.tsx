@@ -9,11 +9,17 @@ import {
   Moon,
   LogOut,
   Palmtree,
+  Eraser,
 } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAttendance } from "@/hooks/use-stats";
-import { useAddHolidays, useDeleteHoliday, useUpdateProfile } from "@/hooks/use-data";
+import {
+  useAddHolidays,
+  useDeleteHoliday,
+  useDeleteRecordsBefore,
+  useUpdateProfile,
+} from "@/hooks/use-data";
 import { HolidayImportDialog } from "@/components/holiday-import-dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -21,6 +27,16 @@ import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
 import { Skeleton } from "@/components/ui/skeleton";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { formatDatePretty } from "@/lib/attendance";
 
 export const Route = createFileRoute("/_authenticated/settings")({
