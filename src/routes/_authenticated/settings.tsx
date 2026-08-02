@@ -49,6 +49,7 @@ function SettingsPage() {
   const updateProfile = useUpdateProfile();
   const addHolidays = useAddHolidays();
   const deleteHoliday = useDeleteHoliday();
+  const deleteBefore = useDeleteRecordsBefore();
 
   const [semesterStart, setSemesterStart] = useState("");
   const [threshold, setThreshold] = useState(75);
@@ -56,6 +57,29 @@ function SettingsPage() {
   const [newHolidayDate, setNewHolidayDate] = useState("");
   const [newHolidayName, setNewHolidayName] = useState("");
   const [dark, setDark] = useState(false);
+  const [cutoffDate, setCutoffDate] = useState("");
+  const [shiftStart, setShiftStart] = useState(true);
+  const [confirmOpen, setConfirmOpen] = useState(false);
+
+  async function clearBeforeCutoff() {
+    if (!cutoffDate) return;
+    try {
+      const removed = await deleteBefore.mutateAsync(cutoffDate);
+      if (shiftStart) {
+        await updateProfile.mutateAsync({ semester_start: cutoffDate });
+        setSemesterStart(cutoffDate);
+      }
+      setConfirmOpen(false);
+      toast.success(
+        removed === 0
+          ? "No attendance found before that date"
+          : `Cleared ${removed} attendance entr${removed === 1 ? "y" : "ies"}`,
+      );
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Could not clear attendance");
+    }
+  }
+
 
   useEffect(() => {
     if (profile) {
